@@ -1,7 +1,7 @@
 var myvideo = document.getElementById('video');
 var socket = io('/livestream',{transports: ['websocket']});
 
-var TIMEMAIN = 5000;
+var TIMEMAIN = 1000;
 var TIMEPIPELINE = 0.5 * TIMEMAIN;
 var count = 0;
 
