@@ -1,1 +1,19 @@
-p I'm host
+extends ../layout
+block css
+  link(rel='stylesheet', href='/css/livestream.css')
+block content
+  h1 Welcome to Live Chat
+  p Hệ thống live chat and live chat.
+  hr
+  .row
+    .col-lg-12
+      p Current room: #{roomId}
+      video#video.myvideo(autoplay='true')
+block js
+  script.
+    window.DATA_RENDER = {};
+    window.DATA_RENDER.roomId = '#{roomId}';
+
+  script(src='/socket.io/socket.io.js')
+  script(src='/js/lib/socket.io-stream.js')
+  script(src='/js/livestream/host.js')

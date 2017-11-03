@@ -82,14 +82,14 @@ export const postCreateLiveStream = (req,res) => {
 export const getLiveStreamOnline = async (req,res) => {
   let roomId = req.params.roomId;
   let user = req.user;
-
+  console.log(user);
   //todo: checkdb that user is host ?
   // if host => render livechat/host
   // else render livechat/other
   let isHost = await Room.compareHost(user.id,roomId,TypeRoom.LIVESTREAM);
 
   if(isHost){
-      return res.render('livestream/host');
+      return res.render('livestream/host',{roomId,user});
   }
-  return res.render('livestream/other');;
+  return res.render('livestream/other',{roomId,user});;
 };
