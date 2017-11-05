@@ -6,6 +6,12 @@ var TYPE = 'video/webm; codecs="vorbis,vp8"';
 // var ms = new MediaSource();
 $(function() {
 
+  socket.on('connection',function(arg){
+    console.log('socket connection!',arg);
+  })
+  socket.on('disconnect',function(err){
+    console.log('socket disconnect',err);
+  })
   socket.emit('join',{
     roomId : window.DATA_RENDER.roomId,
   },function (ack) {
