@@ -151,7 +151,15 @@ server.listen(app.get('port'), () => {
   * event socket
   */
 import socketEvent from './socketEvent.js'
-const io = require('socket.io')(server);
+var options = {
+    pingTimeout: 3000,
+    pingInterval: 3000,
+    transports: ['websocket'],
+    allowUpgrades: false,
+    upgrade: false,
+    cookie: false
+};
+const io = require('socket.io')(server,options);
 socketEvent(io);
 
 module.exports = app;
