@@ -1,5 +1,5 @@
 var myvideo = document.getElementById('video');
-var socket = io('/livestream',{transports: ['websocket']});
+var socket = io('https://34.207.67.188/livestream',{transports: ['websocket']});
 
 var TYPE = 'video/webm; codecs="vorbis,vp8"';
 // video.src = window.URL.createObjectURL(ms);
