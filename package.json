@@ -10,6 +10,7 @@
   "license": "MIT",
   "scripts": {
     "start": "babel-node app.js",
+    "start:prod" : "pm2 start --interpreter babel-node app.js",
     "test": "mocha --reporter spec",
     "postinstall": "npm rebuild node-sass",
     "eslint": "eslint **/*.js"
