@@ -1,7 +1,7 @@
 var ss = require('socket.io-stream');
 let rooms = {};
 module.exports = (io) => {
-  io.of('/livestream').on('connection',(socket) => {
+  io.on('connection',(socket) => {
     console.log('Event connection: ',socket.id);
 
     socket.on('join',(data,cb) => {

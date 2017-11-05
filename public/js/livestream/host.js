@@ -1,5 +1,5 @@
 var myvideo = document.getElementById('video');
-var socket = io('https://34.207.67.188/livestream',{transports: ['websocket']});
+var socket = io('https://34.207.67.188/',{transports: ['websocket']});
 
 var TIMEMAIN = 2000;
 var TIMEPIPELINE = 0.5 * TIMEMAIN;
