@@ -1,17 +1,9 @@
 var myvideo = document.getElementById('video');
 var socket = io('/livestream',{transports: ['websocket']});
 
-function loadCam(localStream) {
-    console.log('Load camera success');
-    socket.on('server-broadcast-livestream', function (blob) {
-      myvideo.srcObj = stream;
-    })
-
-}
-function loadCamErr(err) {
-  console.log('Load camera failure: ',err);
-}
-
+var TYPE = 'video/webm; codecs="vorbis,vp8"';
+// video.src = window.URL.createObjectURL(ms);
+// var ms = new MediaSource();
 $(function() {
 
   socket.emit('join',{
@@ -20,9 +12,16 @@ $(function() {
     console.log('JOIN: Server on recived message: ',ack)
   })
 
-  socket.on('server-broadcast-livestream', function (arrayBuffer) {
-    var blob = new Blob([arrayBuffer], { 'type' : 'video/webm' });
-    myvideo.src = window.URL.createObjectURL(blob);
-  })
+  ms.addEventListener('sourceopen', function(e) {
+
+    var sourceBuffer = ms.addSourceBuffer(TYPE);
+
+    socket.on('server-broadcast-livestream', function (arrayBuffer) {
+      var blob = new Blob([arrayBuffer], { 'type' : TYPE });
+      myvideo.src = window.URL.createObjectURL(blob);
+
+    })
+  }, false);
+
 
 });

@@ -1,21 +1,22 @@
 var myvideo = document.getElementById('video');
 var socket = io('/livestream',{transports: ['websocket']});
 
-var TIMEMAIN = 5000;
+var TIMEMAIN = 2000;
 var TIMEPIPELINE = 0.5 * TIMEMAIN;
 var count = 0;
 
 function mainRecord(stream) {
   var mediaRecorder = new MediaRecorder(stream);
-  mediaRecorder.onstart = function(e) {
-      this.chunks = [];
-  };
+
   mediaRecorder.ondataavailable = function(e) {
-      this.chunks.push(e.data);
+    // var blob = new Blob(e.data, { 'type' : 'video/webm; codecs="vorbis,vp8"' });
+    // console.log(blob);
+    console.log(e.data);
+    socket.emit('streaming', e.data);
+
   };
   mediaRecorder.onstop = function(e) {
-      var blob = new Blob(this.chunks, { 'type' : 'video/webm' });
-      socket.emit('streaming', blob);
+
       mediaRecorder.start();
   };
 
@@ -26,18 +27,17 @@ function mainRecord(stream) {
   }, TIMEMAIN);
 }
 
-
+var TYPE = 'video/webm; codecs="vorbis,vp8"';
 function pipelineRecord(stream) {
   var mediaRecorder = new MediaRecorder(stream);
   mediaRecorder.onstart = function(e) {
-      console.log(this.chunks ? this.chunks.length : 0);
       this.chunks = [];
   };
   mediaRecorder.ondataavailable = function(e) {
       this.chunks.push(e.data);
   };
   mediaRecorder.onstop = function(e) {
-      var blob = new Blob(this.chunks, { 'type' : 'video/webm' });
+      var blob = new Blob(this.chunks, { 'type' : TYPE });
       socket.emit('streaming', blob);
       mediaRecorder.start();
   };

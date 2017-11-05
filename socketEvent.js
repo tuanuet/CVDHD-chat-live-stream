@@ -1,5 +1,5 @@
 var ss = require('socket.io-stream');
-
+let rooms = {};
 module.exports = (io) => {
   io.of('/livestream').on('connection',(socket) => {
     console.log('Event connection: ',socket.id);
@@ -9,23 +9,30 @@ module.exports = (io) => {
         if(err) return cb(false);
 
         socket.roomId = data.roomId;
+        rooms[data.roomId] = rooms[data.roomId] || [];
         return cb(true);
       })
 
     })
     socket.on('streaming', function(blob) {
-      console.log('Event streaming: ',blob);
-      // let sockets = io.nsps['/livestream'].connected;
-      // for(var i in sockets) {
-      //   //don't send the stream back to the initiator
-      //   if (sockets[i].id != socket.id){
-      //     var socketTo = sockets[i];
-      //     console.log(socketTo.id)
-      //     ss(socketTo).emit('server-broadcast-livestream',stream,data)
-      //   }
-      // }
-      socket.broadcast.to(socket.roomId).emit('server-broadcast-livestream',blob)
+      if(rooms[socket.roomId])
+        rooms[socket.roomId].push(blob);
 
     });
+
+
+    setInterval(() => {
+      if(socket.roomId ){
+        let room = rooms[socket.roomId];
+        if(room && room.length >= 3){
+          console.log('Event streaming: ',rooms[socket.roomId]);
+          socket.broadcast.to(socket.roomId).emit('server-broadcast-livestream',rooms[socket.roomId].pop())
+        } else {
+          console.log(room.length);
+        }
+
+
+      }
+    },2000)
   });
 }
