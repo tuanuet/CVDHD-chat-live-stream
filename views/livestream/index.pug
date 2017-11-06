@@ -1,11 +1,31 @@
 extends ../layout
-
+block css
+  link(rel='stylesheet', href='/css/livestream.css')
 block content
   h1 Welcome to Live Stream
   p Hệ thống live chat and live stream.
 
   hr
 
-  p
-    a(href='/livestream/create') Create room live stream
-  p show all room live stream
+  btn.btn.btn-danger
+    a(href='/livestream/create')
+      span.text-create Create new room
+
+  hr
+
+  h3 All room live stream
+  .row
+    .col-lg-12
+      table.table.table-striped
+        thead
+          tr
+            th Email
+            th Name Room
+            th Description
+        tbody
+          each item in data
+            tr
+              td
+                a(href=`/livestream/room/${item.roomId}`) #{item.email}
+              td #{item.roomName}
+              td #{item.description}

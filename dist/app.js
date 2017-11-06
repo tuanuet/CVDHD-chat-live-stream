@@ -1,37 +1,53 @@
+'use strict';
+
+var _socketEvent = require('./socketEvent.js');
+
+var _socketEvent2 = _interopRequireDefault(_socketEvent);
+
+var _livestream = require('./router/livestream');
+
+var _livestream2 = _interopRequireDefault(_livestream);
+
+var _livechat = require('./router/livechat');
+
+var _livechat2 = _interopRequireDefault(_livechat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Module dependencies.
  */
-const express = require('express');
-const compression = require('compression');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const chalk = require('chalk');
-const errorHandler = require('errorhandler');
-const lusca = require('lusca');
-const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
-const flash = require('express-flash');
-const path = require('path');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const expressValidator = require('express-validator');
-const expressStatusMonitor = require('express-status-monitor');
-const sass = require('node-sass-middleware');
-const multer = require('multer');
+var express = require('express');
+var compression = require('compression');
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var logger = require('morgan');
+var chalk = require('chalk');
+var errorHandler = require('errorhandler');
+var lusca = require('lusca');
+var dotenv = require('dotenv');
+var MongoStore = require('connect-mongo')(session);
+var flash = require('express-flash');
+var path = require('path');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var expressValidator = require('express-validator');
+var expressStatusMonitor = require('express-status-monitor');
+var sass = require('node-sass-middleware');
+var multer = require('multer');
 
-const upload = multer({ dest: path.join(__dirname, 'uploads') });
+var upload = multer({ dest: path.join(__dirname, 'uploads') });
 /**
  * event socket
  */
-import socketEvent from './socketEvent.js'
-let options = {
-    pingTimeout: 3000,
-    pingInterval: 3000,
-    transports: ['websocket'],
-    allowUpgrades: false,
-    upgrade: false,
-    cookie: false
+
+var options = {
+  pingTimeout: 3000,
+  pingInterval: 3000,
+  transports: ['websocket'],
+  allowUpgrades: false,
+  upgrade: false,
+  cookie: false
 };
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -41,32 +57,32 @@ dotenv.load({ path: '.env.example' });
 /**
  * Controllers (route handlers).
  */
-const homeController = require('./controllers/home');
-const userController = require('./controllers/user');
-const contactController = require('./controllers/contact');
+var homeController = require('./controllers/home');
+var userController = require('./controllers/user');
+var contactController = require('./controllers/contact');
 
 /**
  * API keys and Passport configuration.
  */
-const passportConfig = require('./config/passport');
+var passportConfig = require('./config/passport');
 
 /**
  * Create Express server.
  */
-const app = express();
+var app = express();
 var server = require('http').createServer(app);
 /**
  * event socket
  */
-const io = require('socket.io')(server,options);
-socketEvent(io);
+var io = require('socket.io')(server, options);
+(0, _socketEvent2.default)(io);
 
 /**
  * Connect to MongoDB.
  */
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-mongoose.connection.on('error', (err) => {
+mongoose.connection.on('error', function (err) {
   console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
@@ -102,23 +118,17 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
   res.locals.user = req.user;
   req.io = io;
   next();
 });
 
-
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
   // After successful login, redirect back to the intended page
-  if (!req.user &&
-      req.path !== '/login' &&
-      req.path !== '/signup' &&
-      !req.path.match(/^\/auth/) &&
-      !req.path.match(/\./)) {
+  if (!req.user && req.path !== '/login' && req.path !== '/signup' && !req.path.match(/^\/auth/) && !req.path.match(/\./)) {
     req.session.returnTo = req.path;
-  } else if (req.user &&
-      req.path === '/account') {
+  } else if (req.user && req.path === '/account') {
     req.session.returnTo = req.path;
   }
   next();
@@ -126,11 +136,10 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 //import router
-import routerLiveStream from './router/livestream';
-import routerLiveChat from './router/livechat';
 
-app.use('/livechat',passportConfig.isAuthenticated,routerLiveChat);
-app.use('/livestream',passportConfig.isAuthenticated,routerLiveStream);
+
+app.use('/livechat', passportConfig.isAuthenticated, _livechat2.default);
+app.use('/livestream', passportConfig.isAuthenticated, _livestream2.default);
 
 /**
  * Primary app routes.
@@ -161,11 +170,10 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-server.listen(app.get('port'), () => {
+server.listen(app.get('port'), function () {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
 
-
-
 module.exports = app;
+//# sourceMappingURL=app.js.map
