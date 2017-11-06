@@ -3,7 +3,7 @@
 $(function () {
 
     var myvideo = document.getElementById('video');
-    var socket = io('/livestream');
+    var socket = io('http://34.207.67.188/livestream');
 
     function loadCam(localStream) {
         console.log('Load camera success');
