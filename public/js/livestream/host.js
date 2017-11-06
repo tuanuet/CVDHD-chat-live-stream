@@ -2,7 +2,7 @@
 
 $(function() {
     var myvideo = document.getElementById('video');
-    var socket = io('https://34.207.67.188/livestreamg');
+    var socket = io('/livestreamg');
 
     var TIMEMAIN = 5000;
     var TIMEPIPELINE = 0.5 * TIMEMAIN;
