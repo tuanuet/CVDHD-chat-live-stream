@@ -4,7 +4,7 @@ $(function () {
 
     var myvideo = document.getElementById('video');
     // var socket = io('/livestream');
-    var socket = io('wss://34.207.67.188/livechat', { transports: ['websocket'] });
+    var socket = io('wss://34.207.67.188/livechat', { transports: ['websocket', 'polling'] });
 
     function loadCam(localStream) {
         console.log('Load camera success');
