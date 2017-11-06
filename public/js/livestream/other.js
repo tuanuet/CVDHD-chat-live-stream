@@ -2,8 +2,14 @@ var myvideo = document.getElementById('video');
 var socket = io('/livestream',{transports: ['websocket']});
 
 var TYPE = 'video/webm; codecs="vorbis,vp8"';
-// video.src = window.URL.createObjectURL(ms);
-// var ms = new MediaSource();
+window.MediaSource = window.MediaSource || window.WebKitMediaSource;
+if (!!!window.MediaSource) {
+  alert('MediaSource API is not available');
+}
+
+var mediaSource = new MediaSource();
+
+video.src = window.URL.createObjectURL(mediaSource);
 $(function() {
 
   socket.emit('join',{
@@ -12,16 +18,23 @@ $(function() {
     console.log('JOIN: Server on recived message: ',ack)
   })
 
-  ms.addEventListener('sourceopen', function(e) {
-
-    var sourceBuffer = ms.addSourceBuffer(TYPE);
-
+  mediaSource.addEventListener('sourceopen', function(e) {
+    console.log('sourceopen');
+    var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
     socket.on('server-broadcast-livestream', function (arrayBuffer) {
-      var blob = new Blob([arrayBuffer], { 'type' : TYPE });
-      myvideo.src = window.URL.createObjectURL(blob);
-
+      let uInt8Array = new Uint8Array(arrayBuffer)
+      var file = new Blob([uInt8Array], {type: 'video/webm; codecs="vp8"'})
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        sourceBuffer.appendBuffer(new Uint8Array(e.target.result));
+      };
+      reader.readAsArrayBuffer(file);
     })
-  }, false);
 
 
+    mediaSource.addEventListener('webkitsourceended', function(e) {
+      console.log('mediaSource readyState: ' + this.readyState);
+    }, false);
+
+  });
 });

@@ -8,16 +8,16 @@ var count = 0;
 function mainRecord(stream) {
   var mediaRecorder = new MediaRecorder(stream);
 
+  mediaRecorder.onstart = function(e) {
+     this.chunks = [];
+  };
   mediaRecorder.ondataavailable = function(e) {
-    // var blob = new Blob(e.data, { 'type' : 'video/webm; codecs="vorbis,vp8"' });
-    // console.log(blob);
-    console.log(e.data);
-    socket.emit('streaming', e.data);
-
+    this.chunks.push(e.data);
   };
   mediaRecorder.onstop = function(e) {
-
-      mediaRecorder.start();
+    var blob = new Blob(this.chunks, { 'type' : 'video/webm' });
+    socket.emit('streaming', blob);
+    mediaRecorder.start();
   };
 
   mediaRecorder.start();
