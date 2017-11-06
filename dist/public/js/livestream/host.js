@@ -2,7 +2,8 @@
 
 $(function () {
     var myvideo = document.getElementById('video');
-    var socket = io('/livestreamg');
+    // var socket = io('/livestream');
+    var socket = io('wss://34.207.67.188/livestream', { transports: ['websocket'] });
 
     var TIMEMAIN = 5000;
     var TIMEPIPELINE = 0.5 * TIMEMAIN;
