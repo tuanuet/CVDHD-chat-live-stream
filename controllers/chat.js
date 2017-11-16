@@ -37,15 +37,10 @@ export const getLiveChatOnline = async (req,res) => {
   let roomId = req.params.roomId;
   let user = req.user;
 
-  //todo: checkdb that user is host ?
-  // if host => render livechat/host
-  // else render livechat/other
-  let isHost = await Room.compareHost(user.id,roomId,TypeRoom.LIVECHAT);
+  return res.render('livechat/host',{
+    roomId,user
+  });
 
-  if(isHost){
-      return res.render('livechat/host');
-  }
-  return res.render('livechat/other');;
 };
 
 //===============================================
