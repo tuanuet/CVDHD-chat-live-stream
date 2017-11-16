@@ -1,5 +1,6 @@
 import Room from '../models/Room';
 import * as TypeRoom from '../constants/TypeRoom';
+import _ from 'lodash';
 
 export const getLiveChat = (req,res) => {
   res.render('livechat');
@@ -48,10 +49,27 @@ export const getLiveChatOnline = async (req,res) => {
 };
 
 //===============================================
-export const getLiveStream = (req,res) => {
-  res.render('livestream');
-}
+export const getLiveStream = async (req,res) => {
+  let io = req.io;
+  let rooms = io.of('/livestream').adapter.rooms;
+  let keyRooms = Object.keys(rooms);
+  let promises = _(keyRooms)
+      .filter(key => !_(key).startsWith('/livestream'))
+      .map(async roomId => {
+          let room = await Room.findRoomAndUser(roomId);
+          return {
+              roomId,
+              email: room.hostId.email,
+              roomName: room.name,
+              description: room.description
+          }
+      })
+      .value();
+  let data = await Promise.all(promises);
 
+  console.log('room ID:',data);
+  res.render('livestream',{data});
+}
 
 export const getCreateLiveStream = (req,res) => {
   res.render('livestream/create')

@@ -54,7 +54,12 @@ mongoose.connection.on('error', (err) => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
 });
-
+/**
+  * event socket
+  */
+import socketEvent from './socketEvent.js'
+const io = require('socket.io')(server);
+socketEvent(io);
 /**
  * Express configuration.
  */
@@ -87,6 +92,7 @@ app.use(passport.session());
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  req.io = io;
   next();
 });
 app.use((req, res, next) => {
@@ -147,11 +153,6 @@ server.listen(app.get('port'), () => {
 });
 
 
-/**
-  * event socket
-  */
-import socketEvent from './socketEvent.js'
-const io = require('socket.io')(server);
-socketEvent(io);
+
 
 module.exports = app;

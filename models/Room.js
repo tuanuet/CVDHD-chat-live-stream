@@ -19,8 +19,9 @@ roomSchema.statics.compareHost = async function (userId,roomId, type) {
   return room.hostId == userId && room.type === type;
 }
 
+roomSchema.statics.findRoomAndUser = function (roomId) {
+    return this.findById(roomId).populate('hostId');
+}
+
 const Room = mongoose.model('Room', roomSchema);
-
-
-
 module.exports = Room;
