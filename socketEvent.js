@@ -25,6 +25,7 @@ module.exports = (io) => {
     console.log('Event connection: ',socket.id);
 
     socket.on('join',(data,cb) => {
+      socket.idPeer = data.idPeer;
       socket.join(data.roomId,(err) => {
         if(err) return cb(false);
         socket.roomId = data.roomId;
@@ -33,11 +34,8 @@ module.exports = (io) => {
       })
 
     })
-    socket.on('streaming', function(blob) {
-      console.log('Event streaming: ',blob);
-
-      socket.broadcast.to(socket.roomId).emit('server-broadcast-livestream',blob)
-
-    });
+    socket.on('disconnect',() => {
+      socket.broadcast.to(socket.roomId).emit('member-quit-room',socket.idPeer)
+    })
   });
 }
