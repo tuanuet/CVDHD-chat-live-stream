@@ -5,7 +5,7 @@ $(function() {
     // var socket = io('/livestream');
     var socket = io('/livestream');
 
-    var TIMEMAIN = 5000;
+    var TIMEMAIN = 2000;
     var TIMEPIPELINE = 0.5 * TIMEMAIN;
     var count = 0;
 
