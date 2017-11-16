@@ -24,14 +24,16 @@ const upload = multer({ dest: path.join(__dirname, 'uploads') });
 /**
  * event socket
  */
-import socketEvent from './socketEvent.js'
-let options = {
-    pingTimeout: 3000,
-    pingInterval: 3000,
-    transports: ['websocket'],
-    allowUpgrades: false,
-    upgrade: false,
-    cookie: false
+import socketEvent from './socketEvent';
+import liveChatSocket from './livechat.socket';
+
+const options = {
+  pingTimeout: 3000,
+  pingInterval: 3000,
+  transports: ['websocket'],
+  allowUpgrades: false,
+  upgrade: false,
+  cookie: false
 };
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -54,13 +56,14 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
-var server = require('http').createServer(app);
+const server = require('http').createServer(app);
 /**
  * event socket
  */
-const io = require('socket.io')(server,options);
-socketEvent(io);
+const io = require('socket.io')(server, options);
 
+socketEvent(io);
+liveChatSocket(io);
 /**
  * Connect to MongoDB.
  */
@@ -125,12 +128,12 @@ app.use((req, res, next) => {
 });
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
-//import router
+// import router
 import routerLiveStream from './router/livestream';
 import routerLiveChat from './router/livechat';
 
-app.use('/livechat',passportConfig.isAuthenticated,routerLiveChat);
-app.use('/livestream',passportConfig.isAuthenticated,routerLiveStream);
+app.use('/livechat', passportConfig.isAuthenticated, routerLiveChat);
+app.use('/livestream', passportConfig.isAuthenticated, routerLiveStream);
 
 /**
  * Primary app routes.
@@ -165,7 +168,6 @@ server.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
-
 
 
 module.exports = app;

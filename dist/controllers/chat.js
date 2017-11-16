@@ -53,35 +53,16 @@ var postCreateLiveChat = exports.postCreateLiveChat = function postCreateLiveCha
   */
 var getLiveChatOnline = exports.getLiveChatOnline = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-    var roomId, user, isHost;
+    var roomId, user;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             roomId = req.params.roomId;
             user = req.user;
-
-            //todo: checkdb that user is host ?
-            // if host => render livechat/host
-            // else render livechat/other
-
-            _context.next = 4;
-            return _Room2.default.compareHost(user.id, roomId, TypeRoom.LIVECHAT);
-
-          case 4:
-            isHost = _context.sent;
-
-            if (!isHost) {
-              _context.next = 7;
-              break;
-            }
-
-            return _context.abrupt('return', res.render('livechat/host'));
-
-          case 7:
             return _context.abrupt('return', res.render('livechat/other'));
 
-          case 8:
+          case 3:
           case 'end':
             return _context.stop();
         }
@@ -94,7 +75,7 @@ var getLiveChatOnline = exports.getLiveChatOnline = function () {
   };
 }();
 
-//===============================================
+//= ==============================================
 var getLiveStream = exports.getLiveStream = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
     var io, rooms, keyRooms, promises, data;
@@ -196,7 +177,7 @@ var getLiveStreamOnline = exports.getLiveStreamOnline = function () {
             user = req.user;
 
             console.log(user);
-            //todo: checkdb that user is host ?
+            // todo: checkdb that user is host ?
             // if host => render livechat/host
             // else render livechat/other
             _context4.next = 5;
@@ -215,7 +196,7 @@ var getLiveStreamOnline = exports.getLiveStreamOnline = function () {
           case 8:
             return _context4.abrupt('return', res.render('livestream/other', { roomId: roomId, user: user }));
 
-          case 10:
+          case 9:
           case 'end':
             return _context4.stop();
         }

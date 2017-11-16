@@ -1,9 +1,11 @@
-module.exports = (io) => {
-  io.of('/livechat').on('connection', (socket) => {
+'use strict';
+
+module.exports = function (io) {
+  io.of('/livechat').on('connection', function (socket) {
     console.log('Event connection: ', socket.id);
 
-    socket.on('join', (data, cb) => {
-      socket.join(data.roomId, (err) => {
+    socket.on('join', function (data, cb) {
+      socket.join(data.roomId, function (err) {
         if (err) return cb(false);
 
         socket.roomId = data.roomId;
@@ -14,3 +16,4 @@ module.exports = (io) => {
     });
   });
 };
+//# sourceMappingURL=livechat.socket.js.map

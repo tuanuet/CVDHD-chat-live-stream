@@ -1,16 +1,20 @@
 'use strict';
 
-var _socketEvent = require('./socketEvent.js');
+var _socketEvent = require('./socketEvent');
 
 var _socketEvent2 = _interopRequireDefault(_socketEvent);
+
+var _livechat = require('./livechat.socket');
+
+var _livechat2 = _interopRequireDefault(_livechat);
 
 var _livestream = require('./router/livestream');
 
 var _livestream2 = _interopRequireDefault(_livestream);
 
-var _livechat = require('./router/livechat');
+var _livechat3 = require('./router/livechat');
 
-var _livechat2 = _interopRequireDefault(_livechat);
+var _livechat4 = _interopRequireDefault(_livechat3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40,6 +44,7 @@ var upload = multer({ dest: path.join(__dirname, 'uploads') });
 /**
  * event socket
  */
+
 
 var options = {
   pingTimeout: 3000,
@@ -75,8 +80,9 @@ var server = require('http').createServer(app);
  * event socket
  */
 var io = require('socket.io')(server, options);
-(0, _socketEvent2.default)(io);
 
+(0, _socketEvent2.default)(io);
+(0, _livechat2.default)(io);
 /**
  * Connect to MongoDB.
  */
@@ -135,10 +141,10 @@ app.use(function (req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
-//import router
+// import router
 
 
-app.use('/livechat', passportConfig.isAuthenticated, _livechat2.default);
+app.use('/livechat', passportConfig.isAuthenticated, _livechat4.default);
 app.use('/livestream', passportConfig.isAuthenticated, _livestream2.default);
 
 /**

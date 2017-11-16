@@ -1,13 +1,15 @@
-$(() => {
-  const myvideo = document.getElementById('video');
-  const socket = io('/livestream', { transports: ['websocket'] });
+'use strict';
 
-  const TIMEMAIN = 2000;
-  const TIMEPIPELINE = 0.5 * TIMEMAIN;
-  const count = 0;
+$(function () {
+  var myvideo = document.getElementById('video');
+  var socket = io('/livestream', { transports: ['websocket'] });
+
+  var TIMEMAIN = 2000;
+  var TIMEPIPELINE = 0.5 * TIMEMAIN;
+  var count = 0;
 
   function mainRecord(stream) {
-    const mediaRecorder = new MediaRecorder(stream);
+    var mediaRecorder = new MediaRecorder(stream);
 
     mediaRecorder.onstart = function (e) {
       this.chunks = [];
@@ -16,21 +18,21 @@ $(() => {
       this.chunks.push(e.data);
     };
     mediaRecorder.onstop = function (e) {
-      const blob = new Blob(this.chunks, { type: 'video/webm' });
+      var blob = new Blob(this.chunks, { type: 'video/webm' });
       socket.emit('streaming', blob);
       mediaRecorder.start();
     };
 
     mediaRecorder.start();
     // Stop recording after 3 seconds and broadcast it to server
-    setInterval(() => {
+    setInterval(function () {
       mediaRecorder.stop();
     }, TIMEMAIN);
   }
 
-  const TYPE = 'video/webm; codecs="vorbis,vp8"';
+  var TYPE = 'video/webm; codecs="vorbis,vp8"';
   function pipelineRecord(stream) {
-    const mediaRecorder = new MediaRecorder(stream);
+    var mediaRecorder = new MediaRecorder(stream);
     mediaRecorder.onstart = function (e) {
       this.chunks = [];
     };
@@ -38,18 +40,17 @@ $(() => {
       this.chunks.push(e.data);
     };
     mediaRecorder.onstop = function (e) {
-      const blob = new Blob(this.chunks, { type: TYPE });
+      var blob = new Blob(this.chunks, { type: TYPE });
       socket.emit('streaming', blob);
       mediaRecorder.start();
     };
 
-
     // Stop recording after 3 seconds and broadcast it to server
-    setTimeout(() => {
+    setTimeout(function () {
       mediaRecorder.start();
-      setInterval(() => {
+      setInterval(function () {
         mediaRecorder.stop();
-        setTimeout(() => {
+        setTimeout(function () {
           console.log('do\'nt do nothing');
         }, TIMEPIPELINE);
       }, TIMEPIPELINE);
@@ -57,7 +58,7 @@ $(() => {
   }
   function loadCam(stream) {
     console.log('Load camera success');
-    const src = window.URL.createObjectURL(stream);
+    var src = window.URL.createObjectURL(stream);
     myvideo.src = src;
 
     mainRecord(stream);
@@ -67,14 +68,14 @@ $(() => {
     console.log('Load camera failure: ', err);
   }
   socket.emit('join', {
-    roomId: window.DATA_RENDER.roomId,
-  }, (ack) => {
+    roomId: window.DATA_RENDER.roomId
+  }, function (ack) {
     console.log('JOIN: Server on recived message: ', ack);
   });
 
-  navigator.getUserMedia = (navigator.getUserMedia || navigator.webkirGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msgGetUserMedia);
+  navigator.getUserMedia = navigator.getUserMedia || navigator.webkirGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia;
   if (navigator.getUserMedia) {
     navigator.getUserMedia({ video: true, audio: true }, loadCam, loadCamErr);
   }
 });
+//# sourceMappingURL=host.js.map
