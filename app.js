@@ -110,14 +110,14 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'encodes')));
 //import router
 import routerLiveStream from './router/livestream.js';
 import routerLiveChat from './router/livechat.js';
 
 app.use('/livechat',passportConfig.isAuthenticated,routerLiveChat);
 app.use('/livestream',passportConfig.isAuthenticated,routerLiveStream);
-
+// app.use('/livestream',routerLiveStream);
 /**
  * Primary app routes.
  */

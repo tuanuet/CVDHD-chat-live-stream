@@ -9,11 +9,11 @@ block content
     .col-lg-12
       p I'm other,email: #{user.email}
       p Current room: #{roomId}
-      video#video.myvideo(autoplay='true')
+      video#video(control='' autoplay=true)
 block js
   script.
     window.DATA_RENDER = {};
     window.DATA_RENDER.roomId = '#{roomId}';
-
+  script(src='/js/lib/socket.io-stream.js')
   script(src='/socket.io/socket.io.js')
   script(src='/js/livestream/other.js')

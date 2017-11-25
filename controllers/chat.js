@@ -1,7 +1,9 @@
 import Room from '../models/Room';
 import * as TypeRoom from '../constants/TypeRoom';
 import _ from 'lodash';
-
+import fs from 'fs';
+import path from 'path';
+var ffmpeg = require('fluent-ffmpeg');
 export const getLiveChat = (req,res) => {
   res.render('livechat');
 }
@@ -105,4 +107,44 @@ export const getLiveStreamOnline = async (req,res) => {
       return res.render('livestream/host',{roomId,user});
   }
   return res.render('livestream/other',{roomId,user});;
+};
+
+export const getLiveStreamSegment = async (req,res) => {
+  try {
+      let io = req.io;
+      let roomId = req.params.roomId;
+      //todo : find socket have roomId = socket.roomId
+      let roomAgent = io.of('/livestream').adapter.rooms[roomId];
+      if(!roomAgent) throw new Error('room does not exist');
+      let socketIdLiveStream = _.concat([],Object.keys(roomAgent.sockets))[0];
+      let socketLiveStream = io.nsps['/livestream'].connected[socketIdLiveStream];
+      //todo : get segment by count
+      let countSegment = socketLiveStream.countSegment;
+      console.log(countSegment);
+      //todo : read blob segment pip res
+      let pathSegment = path.join(__dirname,`../uploads/${roomId}/blob-${countSegment}.webm`)
+      let pathSend = path.join(__dirname,`../encodes/${roomId}/blob-${countSegment}.mp4`)
+
+      ffmpeg(pathSegment)
+        .videoCodec('libx264')
+        .audioCodec('libmp3lame')
+        .on('error', function(err) {
+          console.log('An error occurred: ' + err.message);
+        })
+        .on('end', function() {
+          console.log('Processing finished !');
+          let segmentStream = fs.createReadStream(pathSend);
+          // segmentStream = fs.createBlobReadStream(socketLiveStream.buffers.pop())
+          segmentStream.pipe(res);
+        })
+        .save(pathSend);
+
+      // let segmentStream = fs.createReadStream(pathSend);
+      // // segmentStream = fs.createBlobReadStream(socketLiveStream.buffers.pop())
+      // segmentStream.pipe(res);
+
+  } catch (err) {
+      console.log(err.message);
+  }
+
 };

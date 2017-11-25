@@ -11,4 +11,6 @@ router.route('/create')
 // view online
 router.get('/room/:roomId',chatController.getLiveStreamOnline);
 
+
+router.get('/room/:roomId/segment',chatController.getLiveStreamSegment);
 module.exports = router;

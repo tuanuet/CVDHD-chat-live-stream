@@ -3,14 +3,14 @@
 $(function () {
     var myvideo = document.getElementById('video');
     // var socket = io('/livestream');
-    var socket = io('wss://34.207.67.188/livestream');
-
-    var TIMEMAIN = 5000;
+    var socket = io('/livestream');
+    var options = { mimeType: 'video/webm;codecs=vp8', bitsPerSecond: 100000 };
+    var TIMEMAIN = 3000;
     var TIMEPIPELINE = 0.5 * TIMEMAIN;
     var count = 0;
 
     function mainRecord(stream) {
-        var mediaRecorder = new MediaRecorder(stream);
+        var mediaRecorder = new MediaRecorder(stream, options);
         mediaRecorder.onstart = function (e) {
             this.chunks = [];
         };

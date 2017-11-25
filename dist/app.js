@@ -1,5 +1,9 @@
 'use strict';
 
+var _socketEvent = require('./socketEvent.js');
+
+var _socketEvent2 = _interopRequireDefault(_socketEvent);
+
 var _livestream = require('./router/livestream.js');
 
 var _livestream2 = _interopRequireDefault(_livestream);
@@ -7,10 +11,6 @@ var _livestream2 = _interopRequireDefault(_livestream);
 var _livechat = require('./router/livechat.js');
 
 var _livechat2 = _interopRequireDefault(_livechat);
-
-var _socketEvent = require('./socketEvent.js');
-
-var _socketEvent2 = _interopRequireDefault(_socketEvent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70,7 +70,12 @@ mongoose.connection.on('error', function (err) {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
 });
+/**
+  * event socket
+  */
 
+var io = require('socket.io')(server);
+(0, _socketEvent2.default)(io);
 /**
  * Express configuration.
  */
@@ -103,6 +108,7 @@ app.use(passport.session());
 app.use(flash());
 app.use(function (req, res, next) {
   res.locals.user = req.user;
+  req.io = io;
   next();
 });
 app.use(function (req, res, next) {
@@ -115,13 +121,13 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'uploads')));
 //import router
 
 
 app.use('/livechat', passportConfig.isAuthenticated, _livechat2.default);
 app.use('/livestream', passportConfig.isAuthenticated, _livestream2.default);
-
+// app.use('/livestream',routerLiveStream);
 /**
  * Primary app routes.
  */
@@ -155,13 +161,6 @@ server.listen(app.get('port'), function () {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });
-
-/**
-  * event socket
-  */
-
-var io = require('socket.io')(server);
-(0, _socketEvent2.default)(io);
 
 module.exports = app;
 //# sourceMappingURL=app.js.map

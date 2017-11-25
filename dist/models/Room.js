@@ -52,7 +52,10 @@ roomSchema.statics.compareHost = function () {
   };
 }();
 
-var Room = mongoose.model('Room', roomSchema);
+roomSchema.statics.findRoomAndUser = function (roomId) {
+  return this.findById(roomId).populate('hostId');
+};
 
+var Room = mongoose.model('Room', roomSchema);
 module.exports = Room;
 //# sourceMappingURL=Room.js.map
