@@ -21,7 +21,7 @@ openStream().then(stream =>{
 
   socket.on('new-member-join-room',function (idPeer) {
     const call = peer.call(idPeer, stream);
-    createVideo(idPeer,200);
+    createVideo(idPeer,400);
     call.on('stream', remoteStream => playStream(idPeer, remoteStream));
   })
 });
@@ -33,7 +33,7 @@ socket.on('member-quit-room',function (idPeer) {
 peer.on('call', call => {
   openStream().then( stream => {
     call.answer(stream);
-    createVideo(call.peer,200)
+    createVideo(call.peer,400)
     call.on('stream', (remoteStream) => playStream(call.peer,remoteStream));
   });
 });
