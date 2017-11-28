@@ -39,7 +39,12 @@ peer.on('call', call => {
 });
 
 let createVideo = (id,size) => {
-  $('#div-chat').append(`<video id=${id} controls width="${size}"></video>`)
+  if(id==='localStream'){
+      $('#div-chat').append(`<video id=${id} controls width="${size}" muted></video>`)
+  }else{
+      $('#div-chat').append(`<video id=${id} controls width="${size}"></video>`)
+  }
+
 }
 let removeVideo = (id) => {
   $(`#${id}`).remove()
