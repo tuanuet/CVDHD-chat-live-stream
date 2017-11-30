@@ -20,6 +20,10 @@ module.exports = (io) => {
       socket.broadcast.to(socket.roomId).emit('server-broadcast-livestream',blob)
 
     });
+    socket.on('disconnect',function () {
+      let numberPeople = io.nsps['/livestream'].adapter.rooms[socket.roomId].length
+      socket.broadcast.to(data.roomId).emit('number-people-in-room',numberPeople)
+    })
   });
 
   io.of('/livechat').on('connection',(socket) => {
