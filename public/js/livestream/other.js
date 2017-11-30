@@ -23,6 +23,7 @@ $(function() {
     })
 
     socket.on('server-broadcast-livestream', function (arrayBuffer) {
+        console.log(arrayBuffer);
         var blob = new Blob([arrayBuffer], { 'type' : 'video/webm' });
         myvideo.src = window.URL.createObjectURL(blob);
     })
