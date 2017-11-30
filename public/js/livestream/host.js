@@ -5,7 +5,7 @@ $(function() {
     // var socket = io('/livestream');
     var socket = io('/livestream');
     var options = { mimeType: 'video/webm;codecs=vp8', bitsPerSecond: 100000 };
-    var TIMEMAIN = 2000;
+    var TIMEMAIN = 5000;
     var TIMEPIPELINE = 0.5 * TIMEMAIN;
     var count = 0;
 
