@@ -21,8 +21,10 @@ module.exports = (io) => {
 
     });
     socket.on('disconnect',function () {
-      let numberPeople = io.nsps['/livestream'].adapter.rooms[socket.roomId].length
-      socket.broadcast.to(data.roomId).emit('number-people-in-room',numberPeople)
+      if(socket.roomId){
+        let numberPeople = io.nsps['/livestream'].adapter.rooms[socket.roomId].length
+        socket.broadcast.to(socket.roomId).emit('number-people-in-room',numberPeople)
+      }
     })
   });
 
