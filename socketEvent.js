@@ -7,7 +7,8 @@ module.exports = (io) => {
     socket.on('join',(data,cb) => {
       socket.join(data.roomId,(err) => {
         if(err) return cb(false);
-
+        let numberPeople = io.nsps['/livestream'].adapter.rooms[data.roomId].length
+        socket.broadcast.to(data.roomId).emit('number-people-in-room',numberPeople)
         socket.roomId = data.roomId;
         return cb(true);
       })

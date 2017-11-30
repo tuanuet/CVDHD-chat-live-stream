@@ -7,8 +7,11 @@ block content
   hr
   .row
     .col-lg-12
-      p Current room: #{roomId}
-      video#video.myvideo(autoplay='true' mute)
+      p
+        | Room: #{roomId} có 
+        span#number-people  1
+        |  người
+      video#video.myvideo(autoplay='true' muted)
 block js
   script.
     window.DATA_RENDER = {};

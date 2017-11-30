@@ -78,6 +78,9 @@ $(function() {
     },function (ack) {
     console.log('JOIN: Server on recived message: ',ack)
     })
+    socket.on('number-people-in-room',function (number) {
+        document.getElementById('number-people').innerHTML = number;
+    })
 
     navigator.getUserMedia = (navigator.getUserMedia || navigator.webkirGetUserMedia||
             navigator.mozGetUserMedia || navigator.msgGetUserMedia);
