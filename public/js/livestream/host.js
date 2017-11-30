@@ -24,7 +24,7 @@ $(function() {
             mediaRecorder.start();
         };
 
-        mediaRecorder.start();
+        mediaRecorder.start(3);
         // Stop recording after 3 seconds and broadcast it to server
         setInterval(function() {
             mediaRecorder.stop()
